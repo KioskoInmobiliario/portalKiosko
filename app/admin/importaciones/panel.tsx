@@ -16,6 +16,18 @@ export default function AdminPanel() {
  const [busy,setBusy] = useState(false); const [notice,setNotice] = useState(''); const [errors,setErrors] = useState<string[]>([]);
  const [confirm,setConfirm] = useState(false); const [onlyIssues,setOnlyIssues] = useState(false);
  const [authEmail,setAuthEmail] = useState(''); const [password,setPassword] = useState('');
+ const [recovering,setRecovering] = useState(false);
+ async function recoverPassword(e: React.FormEvent) {
+  e.preventDefault(); if (busy) return; setBusy(true); setErrors([]); setNotice('');
+  try {
+   const redirect = `${window.location.origin}/auth/activar`;
+   const res = await fetch(`${SUPABASE_URL}/auth/v1/recover?redirect_to=${encodeURIComponent(redirect)}`, {
+    method:'POST', headers:{apikey:SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'}, body:JSON.stringify({email:authEmail.trim()})
+   });
+   if (!res.ok) throw new Error(res.status===429?'Espere unos minutos antes de solicitar otro enlace.':'No se pudo enviar la recuperación. Intente nuevamente más tarde.');
+   setNotice('Si el correo está registrado, recibirá un enlace para configurar su contraseña. Revise también la carpeta de correo no deseado.');
+  } catch(e) {setErrors([(e as Error).message]);} finally {setBusy(false);}
+ }
  const request = async (access: string, body: unknown): Promise<ReviewData> => {
   const res = await fetch('/api/admin/imports', { method: 'POST', headers: { Authorization: `Bearer ${access}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body), cache: 'no-store' });
   const json = await res.json();
@@ -80,7 +92,9 @@ export default function AdminPanel() {
  return <main className={styles.shell}>
   <header className={styles.header}><Link href="/" className={styles.brand}>KIOSKO<span>INMOBILIARIO</span></Link><div className={styles.adminLabel}><ShieldCheck size={17}/> Administración</div>{token&&<button onClick={logout} className={styles.light}><LogOut size={16}/> Salir</button>}</header>
   {!token ? <section className={styles.login}><div className={styles.icon}><ShieldCheck size={28}/></div><p className={styles.eyebrow}>ACCESO ADMINISTRATIVO</p><h1>Revisión de importaciones</h1><p>Ingrese con su cuenta autorizada para revisar los datos del Excel e incorporarlos al portal.</p>
-   <form onSubmit={login}><label className={styles.field}><span>Correo administrativo</span><input type="email" autoComplete="username" required value={authEmail} onChange={e=>setAuthEmail(e.target.value)}/></label><label className={styles.field}><span>Contraseña</span><input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label><button className={styles.primary} disabled={busy}>{busy?'Verificando acceso…':'Ingresar al panel'}<ChevronRight size={17}/></button></form>
+   <form onSubmit={recovering?recoverPassword:login}><label className={styles.field}><span>Correo administrativo</span><input type="email" autoComplete="username" required disabled={busy} value={authEmail} onChange={e=>setAuthEmail(e.target.value)}/></label>{!recovering&&<label className={styles.field}><span>Contraseña</span><input type="password" autoComplete="current-password" required value={password} onChange={e=>setPassword(e.target.value)}/></label>}<button className={styles.primary} disabled={busy}>{recovering?(busy?'Enviando enlace…':'Enviar enlace de recuperación'):(busy?'Verificando acceso…':'Ingresar al panel')}<ChevronRight size={17}/></button></form>
+   <button type="button" className={styles.back} disabled={busy} style={{background:'none',border:0,padding:0}} onClick={()=>{setRecovering(!recovering);setPassword('');setErrors([]);setNotice('');}}>{recovering?'Volver al inicio de sesión':'Recuperar contraseña'}</button>
+   <div role="status">{notice&&<p className={styles.success}>{notice}</p>}</div>
    <div role="alert">{errors.map(e=><p className={styles.error} key={e}>{e}</p>)}</div><p className={styles.hint}>La cuenta debe estar registrada en Supabase Auth y autorizada como administradora. La sesión se cierra al recargar la página.</p><Link className={styles.back} href="/"><ArrowLeft size={15}/> Volver al portal</Link>
   </section> : <div className={styles.content}>
    <div className={styles.title}><div><p className={styles.eyebrow}>DATOS DEL PORTAL</p><h1>Revisión de importaciones</h1><p>Revise el origen, corrija los campos y apruebe cada incorporación.</p></div><button className={styles.light} disabled={busy} onClick={refresh}>Actualizar datos</button></div>
