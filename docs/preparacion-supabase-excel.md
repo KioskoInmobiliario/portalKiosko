@@ -1,67 +1,96 @@
-# Preparación Supabase a partir del Excel
-Estado: preparada en GitHub, no aplicada a un proyecto Supabase. No se ha activado el acceso real del portal ni subido información del libro.
+# Supabase: esquema aplicado y Excel cargado
 
-## Fuente revisada
-Base Kiosko Inmobiliario.xlsx, suministrado como datos ficticios. Hoja 1 tiene 17 columnas de negocio y 93 registros consecutivos (filas 2–94). Las filas 926–930 son un bloque auxiliar de aumentos y se excluyen de la importación de contratos. Las filas vacías no generan registros.
+Estado al 30 de septiembre de 2026: esquema aplicado al proyecto Kiosko y 93 filas cargadas en un lote de revisión. La autenticación del portal y la consulta de PDF todavía no están implementadas.
 
-Hay 11 grupos de referencias de contrato repetidas (13 filas adicionales con una referencia ya utilizada). No se deben eliminar ni consolidar automáticamente: pueden corresponder a errores o a un contrato con varios inmuebles. Falta una referencia en la fila 13. Tres registros no tienen nombre de inquilino, dos no tienen fecha de inicio y 22 no tienen teléfono o correo de inquilino.
+## Proyecto e historial
 
-El archivo no aporta cédulas, correos o teléfonos de propietarios, ni código único independiente de inmueble. Los nombres no prueban identidad ni permiten una activación automática de cuentas.
+- Proyecto: KioskoInmobiliario's Project (`samqjwhcaksorgvsyssv`).
+- Rama de GitHub: `borrador/estados-cuenta-propietarios-inquilinos`.
+- Migración remota `20260930011448 — kiosko_core`: SQL de `supabase/migrations/20260930000100_kiosko_core.sql`. El identificador del historial remoto difiere del nombre del archivo preparado.
+- Migración remota `20260930012134 — kiosko_foreign_key_indexes`: seis índices de relaciones, cuyo SQL se conserva al final de este documento.
+- No se han desplegado cambios en la web ni guardado secretos en GitHub.
 
-## Mapeo propuesto
+## Fuente y carga
+
+Fuente: Base Kiosko Inmobiliario.xlsx, suministrado como datos ficticios.
+SHA-256: `5ec22f679025318aa7dd144c6758bdd5b0de22002dab9f1716ea1eda4cb4a948`.
+
+Hoja 1: 17 columnas de negocio y 93 registros, filas 2–94. Se excluyeron filas vacías y el bloque auxiliar de aumentos de las filas 926–930.
+
+Lote: `17a55243-5aac-494f-9f98-b3fa9ab2e586`, estado `staged`.
+Las 93 filas se encuentran en `ki_import_rows`, con estado `pending` e identidad `unverified`. Cada fila conserva sus valores originales, fórmulas y valores cacheados, una propuesta normalizada y las observaciones de validación. Las fórmulas se validaron únicamente para expresiones de suma admitidas, sin ejecutar fórmulas arbitrarias.
+
+La carga usa el hash del archivo para reutilizar el lote y la restricción única lote/hoja/fila para evitar duplicarlo en una repetición. Los datos originales y contactos no se publicaron en este repositorio.
+
+## Resultado de revisión
+
+| Observación | Filas afectadas |
+| --- | ---: |
+| Propietarios sin documento ni datos de contacto suministrados | 93 |
+| Referencia de contrato repetida | 24, en 11 grupos |
+| Falta referencia de contrato | 1 |
+| Falta nombre de inquilino | 3 |
+| Falta fecha de inicio o es inválida | 2 |
+| Falta teléfono de inquilino | 22 |
+| Teléfono con formato inválido | 4 |
+| Falta correo de inquilino | 22 |
+| Correo con formato inválido | 2 |
+| Falta área | 2 |
+| Unidad de área ambigua | 1 |
+| Fecha en campo de parqueadero | 2 |
+| Falta total validable | 1 |
+
+Las observaciones pueden coincidir en una misma fila. Las referencias repetidas pueden corresponder a errores o contratos con varios inmuebles: se conservaron todas. Los nombres no prueban identidad; no se fusionaron propietarios ni se vincularon cuentas automáticamente.
+
+## Mapeo para las entidades definitivas
+
 | Excel | Destino |
 | --- | --- |
-| Contrato # | ki_contracts.external_reference (texto) |
-| Admin | ki_contracts.administration, sujeto a confirmar que es cuota de administración |
+| Contrato # | ki_contracts.external_reference, texto |
+| Admin | ki_contracts.administration, confirmar que representa cuota de administración |
 | Canon | ki_contracts.rent |
-| Total | Control contra canon + administración; no confiar en fórmula sin evaluar |
-| Inicio | ki_contracts.starts_on (fecha) |
+| Total | Control contra canon + administración |
+| Inicio | ki_contracts.starts_on |
 | Direccion | ki_properties.address |
 | Nombre Edificio | ki_properties.building_name |
-| Apto | ki_properties.unit_label (texto) |
+| Apto | ki_properties.unit_label, texto |
 | Nombre Inquilino | ki_clients.full_name + ki_contract_participants |
 | Nombre Propietario | ki_clients.full_name + ki_property_owners |
 | Area | ki_properties.area_m2 tras validar unidades |
 | Hab / Bañ | ki_properties.bedrooms / bathrooms |
-| Parq | ki_properties.parking_reference, no cantidad |
+| Parq | ki_properties.parking_reference, referencia y no cantidad |
 | Seguro | ki_contracts.insurance_provider |
-| Celular Inquilino | ki_clients.phone, texto normalizado |
-| Correo Inquilino | ki_clients.email, recorte de espacios y revisión |
+| Celular Inquilino / Correo Inquilino | ki_clients.phone / email |
 
-Parq contiene referencias numéricas, etiquetas con #, N/A y algunas fechas: estas últimas requieren revisión y no deben convertirse en identificadores de parqueadero automáticamente. Area mezcla números y texto m2; aparece una unidad ambigua (41m1) que debe revisarse. Los importes pueden incluir fórmulas: conservar su texto original y el resultado validado; no ejecutar fórmulas arbitrarias ni asumir que un valor cacheado es vigente.
+## Protección y verificación
 
-## Importación
-1. Registrar lote con hash SHA-256.
-2. Llevar cada fila original y su ubicación a ki_import_rows, sin modificar las entidades finales.
-3. Normalizar identificadores y contactos como texto, fechas e importes tipados.
-4. Marcar duplicados, faltantes y ambigüedades por fila.
-5. Aprobar correspondencias e identidades desde un panel administrativo.
-6. Aplicar las filas aprobadas en una transacción e impedir la reaplicación accidental del lote.
+Se verificaron las nueve tablas, RLS habilitado y ausencia de permisos SELECT/INSERT/UPDATE/DELETE para `anon` y `authenticated`. El rol de servidor administrativo puede operar la base; sus claves nunca deben enviarse al navegador.
 
-Los primeros clientes pueden quedar pendientes sin documento; no se les vincula una cuenta hasta verificar identidad y contacto. No se agrupan propietarios solo porque coincidan sus nombres. Hace falta asignar códigos estables de inmueble y resolver referencias de contrato antes de publicar datos.
+Resultados de consulta: 1 lote, 93 filas pendientes y sin verificar, 0 clientes definitivos, 0 inmuebles definitivos, 0 contratos definitivos y 0 vínculos de cuenta. La revisión aún debe aprobar correspondencias, identificar personas y asignar códigos estables a inmuebles antes de poblar las entidades definitivas.
 
-## Archivos preparados
-- supabase/migrations/20260930000100_kiosko_core.sql: nueve tablas relacionales y staging, claves foráneas, restricciones e índices.
-- supabase/.env.example: nombres de configuración, sin valores reales.
+El asesor de seguridad solo reporta nueve avisos informativos de RLS sin políticas: el cierre de acceso es intencional hasta implementar autorización por propietario/inquilino. La revisión de rendimiento detectó seis claves foráneas sin índice; se corrigieron y verificaron. Solo quedan avisos informativos de índices todavía sin uso, esperables en tablas nuevas.
 
-Todas las tablas comienzan con RLS activado y sin permisos para visitantes ni usuarios finales. No hay políticas de acceso habilitadas todavía. El rol administrativo de servidor puede operar la base; la interfaz cliente no puede administrar registros ni vincular identidades. Los permisos de documentos, Storage y las pruebas de aislamiento se incorporarán junto al módulo correspondiente.
+## Siguiente implementación
 
-## Conexión y próximos pasos
-Instalar y conectar la integración Supabase en esta conversación. Seleccionar un proyecto de desarrollo perteneciente a Kiosko antes de aplicar migraciones. Revisar tablas existentes para evitar colisiones. Si no hay proyecto, definir organización, región y plan antes de crearlo; esta preparación no contrata ni crea infraestructura.
+1. Panel administrativo autorizado en servidor para revisar y aprobar filas.
+2. Aplicación transaccional de registros aprobados a clientes, inmuebles y contratos.
+3. Supabase Auth, configuración Google y validación de identidad antes de vincular cuentas.
+4. PDF privados con destinatarios y pruebas de aislamiento de acceso.
+5. Integración del portal y configuración segura de despliegue.
 
-Después de conectar:
-1. Aplicar y validar el esquema en desarrollo.
-2. Implementar previsualización de importación y resolver los campos ambiguos.
-3. Implementar el panel administrativo con autorización en servidor.
-4. Configurar Auth, proveedor Google y correo transaccional.
-5. Añadir PDF privados, destinatarios y pruebas de acceso/descarga.
-6. Conectar el portal a los datos verificados.
+Conectar el plugin permite administrar Supabase; la web requiere código y configuración propios para consultar los datos. El inicio de sesión no está activado por esta carga.
 
-Conectar el plugin da acceso para administrar Supabase, pero no conecta por sí solo la web en ejecución: el despliegue necesita configuración segura y código de integración. Ningún secreto se guarda en GitHub.
+## SQL adicional aplicado: kiosko_foreign_key_indexes
 
-## Validación realizada
-Revisión del libro sin modificaciones y controles estáticos de estructura SQL y configuración. No se ejecutó la migración: falta conexión a Supabase. No se ha importado el Excel, desplegado cambios ni probado autenticación real.
+```sql
+create index if not exists ki_account_links_approved_by_idx on public.ki_account_links (approved_by);
+create index if not exists ki_account_links_client_id_idx on public.ki_account_links (client_id);
+create index if not exists ki_contract_participants_client_id_idx on public.ki_contract_participants (client_id);
+create index if not exists ki_contract_properties_property_id_idx on public.ki_contract_properties (property_id);
+create index if not exists ki_import_batches_created_by_idx on public.ki_import_batches (created_by);
+create index if not exists ki_property_owners_client_id_idx on public.ki_property_owners (client_id);
+```
 
-Fuentes:
-https://supabase.com/docs/guides/database/postgres/row-level-security
-https://supabase.com/docs/guides/storage/security/access-control
+Referencias:
+- https://supabase.com/docs/guides/database/postgres/row-level-security
+- https://supabase.com/docs/guides/storage/security/access-control
