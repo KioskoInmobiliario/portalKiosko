@@ -30,7 +30,17 @@ Reemitir el enlace correcto para `contacto@kioskoinmobiliario.com` únicamente d
 
 ## Estado de acceso al proveedor
 
-La instalación del plugin Vercel fue confirmada, pero sus herramientas no aparecieron disponibles en esta sesión. Todavía no se verificó la cuenta/equipo de Vercel, no se creó un proyecto remoto ni se modificó DNS o configuración de Auth. El próximo paso requiere herramientas de Vercel disponibles o autorización para continuar en su panel mediante navegador.
+Con autorización del titular se continuó desde el navegador. Proyecto creado y conectado: `portal-kiosko`, equipo `kioskoinmobiliarios-projects`, ID `prj_3hpmfWveHxYDIbplLBWok0HAJWNP`. GitHub conectado a `KioskoInmobiliario/portalKiosko`. Rama de producción: `borrador/estados-cuenta-propietarios-inquilinos`. Framework Next.js y Node.js 24.
+
+Primer despliegue confirmado READY: `dpl_4nRgoTqbqoKg7ynAmYQ32fVLTrcd`, commit `e6b430f1cfdfa02bcf936e219814af7d77503bdc`, duración 39 segundos. URL comprobada: https://portal-kiosko-2honpqp1m-kioskoinmobiliarios-projects.vercel.app/admin/importaciones . Portada y formulario administrativo comprobados sin sesión; no se verificó acceso de una cuenta real.
+
+Se agregó `portal.kioskoinmobiliario.com` al entorno Production. Vercel reporta Invalid Configuration y solicita en el proveedor DNS:
+
+| Tipo | Nombre | Destino |
+|---|---|---|
+| CNAME | portal | 1ba6288808619118.vercel-dns-017.com. |
+
+No se modificó el DNS externo ni Supabase Auth. Falta identificar dónde administra DNS el titular, cambiar exclusivamente el registro del subdominio, verificar HTTPS y completar activación de la cuenta. La web principal `kiosko-web` no se modificó.
 
 Referencias:
 - https://vercel.com/docs/git/vercel-for-github
