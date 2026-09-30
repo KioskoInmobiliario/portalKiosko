@@ -193,8 +193,8 @@ export default function HomePage() {
           <div className="quick-grid">
             {quickServices.map((service) => {
               const Icon = service.icon;
-              const content = <><div className="service-icon"><Icon /></div><div className="service-text"><h3>{service.title}{service.tag && <span className="nfc-tag">{service.tag}</span>}</h3><p>{service.copy}</p><span>{service.label} <ArrowRight /></span></div></>;
-              return service.external ? <a className="quick-card" key={service.key} href={service.href} target="_blank" rel="noreferrer">{content}</a> : <button className="quick-card" key={service.key} onClick={() => openService(service.key)}>{content}</button>;
+              const content = <><div className="service-icon"><Icon /></div><div className="service-text"><h3>{service.title}{'tag' in service && <span className="nfc-tag">{service.tag}</span>}</h3><p>{service.copy}</p><span>{service.label} <ArrowRight /></span></div></>;
+              return 'external' in service && service.external ? <a className="quick-card" key={service.key} href={service.href} target="_blank" rel="noreferrer">{content}</a> : <button className="quick-card" key={service.key} onClick={() => openService(service.key)}>{content}</button>;
             })}
           </div>
         </div>

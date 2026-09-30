@@ -31,7 +31,7 @@ try {
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  assert.equal(await page.evaluate(()=>localStorage.length),0);
  await page.goto('http://localhost:3000/auth/activar',{waitUntil:'networkidle'});
- await page.getByRole('alert').waitFor();
+ await page.getByRole('alert').filter({hasText:'El enlace no es válido o venció.'}).waitFor();
  assert.equal(await page.getByRole('button',{name:'Guardar contraseña'}).count(),0);
  assert.deepEqual(errors,[]);
  console.log('Activación: validación, limpieza del enlace, contraseña, cierre de sesión y móvil comprobados con datos sintéticos.');
