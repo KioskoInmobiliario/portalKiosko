@@ -1,0 +1,4 @@
+# JWT and current admin membership are validated in kiosko-admin/handler.ts.
+# The gateway verifier is disabled for compatibility with the new API key model.
+[functions.kiosko-admin]
+verify_jwt = false

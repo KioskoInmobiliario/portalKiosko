@@ -1,0 +1,14 @@
+node_modules/
+.next/
+dist/
+.env*
+!.env.example
+!supabase/.env.example
+.dev.vars*
+.sites-runtime/
+.wrangler/
+.vinext/
+test-results/
+.openai/
+*.tsbuildinfo
+supabase/.temp/
