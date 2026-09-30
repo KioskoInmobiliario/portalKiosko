@@ -16,7 +16,7 @@ Las 93 filas originales siguen pendientes. Las pruebas no aprobaron registros re
 
 ## Acceso administrativo
 
-Supabase Auth no contiene todavía usuarios del portal, y `ki_admins` está vacía. Una sesión en el dashboard de Supabase no equivale a una cuenta de esta aplicación.
+Se invitó a `contacto@kioskoinmobiliario.com` desde Supabase Auth. Su registro administrativo permanece con `active=false` mientras confirma el correo y configura su contraseña. Una sesión en el dashboard de Supabase no equivale a una cuenta de esta aplicación.
 
 Para habilitar al primer administrador, identificar primero su correo y crear o invitar esa cuenta desde Authentication en Supabase. No guardar contraseñas en GitHub ni enviarlas por esta conversación. Después, un operador autorizado del proyecto ejecuta la asignación para una cuenta existente y confirmada:
 
@@ -30,7 +30,17 @@ on conflict(user_id) do update set active=true;
 
 Verificar que se asignó exactamente una cuenta. Para revocar acceso, cambiar `active` a `false`; las operaciones consultan este valor en cada llamada. La cuenta no puede asignarse permisos a sí misma desde el portal.
 
-La sesión del panel se mantiene en memoria; no almacena tokens en localStorage ni cookies. Una recarga o un token vencido requiere iniciar sesión de nuevo. Se incluye cierre de sesión. Google y recuperación de contraseña pertenecen a una siguiente implementación; no se presentan como opciones operativas.
+La sesión del panel se mantiene en memoria; no almacena tokens en localStorage ni cookies. Una recarga o un token vencido requiere iniciar sesión de nuevo. Se incluye cierre de sesión. Google y el formulario para solicitar recuperación pertenecen a una siguiente implementación.
+
+## Activación y publicación pendiente
+
+La ruta `/auth/activar` recibe enlaces de invitación o recuperación con sesión en el fragmento de la URL. Elimina ese fragmento del historial, valida la identidad confirmada directamente contra Supabase Auth y permite guardar una contraseña de al menos 12 caracteres. No asigna permisos administrativos. La contraseña se envía directamente a Supabase y no se guarda en la aplicación. Al terminar cierra la sesión de activación.
+
+El identificador original del Site, recuperado del archivo fuente del repositorio, es `appgprj_6a6165cbda2c81919c7d15148b65d30c`. La conexión actual de Sites devuelve `NOT_FOUND` para ese proyecto y solo muestra un sitio ajeno a Kiosko. Por ello no se publicó ni se sustituyó otro sitio.
+
+Para completar el acceso falta conectar la cuenta que contiene el Portal Kiosko e identificar su URL real. Después de publicar, configurar en Supabase Auth el Site URL de producción y permitir exactamente la URL de `/auth/activar`. La nueva invitación debe especificar esa ruta como `redirectTo`; permitir una URL por sí solo no cambia el destino de las invitaciones. La invitación anterior fue emitida cuando el Site URL era localhost y no debe darse por operativa en producción. No se modificó todavía esa configuración ni se envió otra invitación.
+
+Una vez confirmada la cuenta, habilitar exclusivamente su fila de `ki_admins` mediante la asignación anterior y comprobar inicio de sesión y listado. La configuración de contraseña corresponde al titular de la cuenta.
 
 ## Incorporación
 
@@ -61,6 +71,7 @@ El listado inicial entrega el lote completo, adecuado para las 93 filas actuales
 
 - Compilación vinext completa y validación del artefacto: aprobadas.
 - Tipos del módulo administrativo: `npx tsc -p tsconfig.admin.json`, aprobado.
+- Activación: dos pruebas de validación y prueba de navegador con respuestas sintéticas; verificación de identidad, eliminación del fragmento, contraseña, cierre de sesión, enlace ausente y vista móvil. Compilación y tipos aprobados.
 - Cinco pruebas de validación y autorización: `node --experimental-strip-types tests/admin-review.test.mjs`, aprobadas.
 - Prueba PostgreSQL con rollback: rechazo, reapertura, validación, versión antigua, incorporación y relaciones, segundo intento bloqueado, auditoría y ausencia de cuentas activadas. Resultado final: 93 filas pendientes, cero clientes y cero auditorías de prueba.
 - Edge Function real sin sesión: HTTP 401; roles anon/authenticated sin ejecución directa de RPCs.

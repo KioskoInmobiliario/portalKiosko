@@ -1,6 +1,6 @@
 {
  "extends": "./tsconfig.json",
  "compilerOptions": {"incremental": false},
- "include": ["next-env.d.ts", "app/admin/importaciones/**/*.tsx", "app/api/admin/imports/route.ts", "lib/kiosko-config.ts", "lib/import-review.ts", "supabase/functions/kiosko-admin/handler.ts"],
+ "include": ["next-env.d.ts", "app/admin/importaciones/**/*.tsx", "app/auth/activar/page.tsx", "app/api/admin/imports/route.ts", "lib/kiosko-config.ts", "lib/import-review.ts", "lib/auth-activation.ts", "supabase/functions/kiosko-admin/handler.ts"],
  "exclude": ["node_modules"]
 }
