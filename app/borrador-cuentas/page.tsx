@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import styles from "./cuentas.module.css";
-import { logo } from "./logo";
+const logo = "/kiosko-logo.png";
 
 type Profile = "propietario" | "inquilino";
 const money = (value: number) => new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 }).format(value);

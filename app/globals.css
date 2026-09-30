@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #071d4f;
-  --navy-2: #102b62;
-  --blue: #0866f5;
-  --blue-dark: #0055dc;
-  --blue-soft: #eaf3ff;
-  --sky: #f4f8ff;
-  --line: #c9d9ee;
-  --ink-soft: #52627b;
+  --navy: #3A4C5A;
+  --navy-2: #30414f;
+  --blue: #3A4C5A;
+  --blue-dark: #293b48;
+  --blue-soft: #eaf5fb;
+  --sky: #f5f9fc;
+  --line: #cbdde8;
+  --ink-soft: #526776;
   --green: #0ca66a;
   --white: #ffffff;
   --shadow: 0 22px 60px rgba(5, 36, 91, 0.12);
@@ -16,7 +16,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: #fff; color: var(--navy); font-family: var(--font-geist-sans), Arial, sans-serif; }
+body { margin: 0; background: #fff; color: var(--navy); font-family: var(--font-poppins), Arial, sans-serif; }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
@@ -60,7 +60,7 @@ button { color: inherit; }
 .portal-sidebar { padding: 22px 12px; border-right: 1px solid #d7e2f1; background: linear-gradient(180deg, #fafdff, #f3f8ff); display: flex; flex-direction: column; gap: 9px; }
 .mini-mark { width: 31px; height: 33px; margin: 0 7px 10px; }
 .mini-mark svg { width: 15px; }
-.side-item { min-height: 38px; padding: 0 8px; display: flex; align-items: center; gap: 8px; border-radius: 6px; color: #52627b; font-size: 11px; }
+.side-item { min-height: 38px; padding: 0 8px; display: flex; align-items: center; gap: 8px; border-radius: 6px; color: #526776; font-size: 11px; }
 .side-item svg { width: 15px; }
 .side-item.active { background: #e9f2ff; color: var(--blue); border: 1px solid #d1e1f6; }
 .portal-content { padding: 30px 28px; }
@@ -122,7 +122,7 @@ button { color: inherit; }
 .role-services h4 { margin: 0 0 8px; font-size: 15px; }
 .role-services p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
 
-.nfc-section { padding: 85px 0; color: white; background: linear-gradient(125deg, #061b4d 0%, #073b8f 58%, #0870f5 100%); position: relative; overflow: hidden; }
+.nfc-section { padding: 85px 0; color: white; background: linear-gradient(125deg, #293b48 0%, #3A4C5A 58%, #526776 100%); position: relative; overflow: hidden; }
 .nfc-section::before { content: "NFC"; position: absolute; right: -30px; top: -120px; font-size: 330px; font-weight: 850; color: rgba(255,255,255,.035); letter-spacing: -.1em; }
 .nfc-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 82px; position: relative; }
 .eyebrow.light { background: rgba(255,255,255,.12); color: white; }
@@ -153,7 +153,7 @@ button { color: inherit; }
 .contact-card > a:not(.button) { display: flex; gap: 9px; align-items: center; padding: 9px 0; color: #d9e6fb; font-size: 12px; }
 .contact-card > a svg { width: 16px; }
 
-footer { background: #051535; color: white; }
+footer { background: #3A4C5A; color: white; }
 .footer-main { padding-top: 48px; padding-bottom: 38px; display: grid; grid-template-columns: 1.8fr 1fr 1fr; gap: 40px; }
 .footer-main .brand { font-size: 20px; }
 .footer-main .brand-mark { width: 34px; height: 36px; }
@@ -241,3 +241,7 @@ form input:focus, form textarea:focus, form select:focus { border-color: var(--b
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+.brand-logo{width:54px;height:72px;object-fit:contain}.site-header{height:100px}.brand-mark,.mini-mark{background:#3A4C5A}.button-primary{box-shadow:0 10px 24px rgba(58,76,90,.15)}.button-primary:hover{box-shadow:0 14px 28px rgba(58,76,90,.2)}
+
+.footer-main .brand-logo{background:white;border-radius:8px;padding:6px;width:66px;height:86px}

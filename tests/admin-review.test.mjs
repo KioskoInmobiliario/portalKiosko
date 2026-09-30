@@ -39,3 +39,16 @@ test('rol revocado y versión antigua generan rechazo visible',async()=>{
   assert.equal((await handleAdmin(request({action:'list'}),{...runtime,fetch:mock})).status,status);
  }
 });
+test('edición usa el actor autenticado y exige versiones de los registros vinculados',async()=>{
+ let parameters, endpoint;
+ const mock=async(url,init)=>{
+  if(url.endsWith('/user'))return Response.json({id:'verified-user'});
+  endpoint=url;parameters=JSON.parse(init.body);return Response.json({status:'applied'});
+ };
+ const body={action:'update',row_id:'00000000-0000-4000-8000-000000000001',version:1,values:valid,entity_versions:{property:0,contract:0,owner:0,tenant:0},p_actor:'attacker'};
+ assert.equal((await handleAdmin(request(body),{...runtime,fetch:mock})).status,200);
+ assert.ok(endpoint.endsWith('/ki_admin_update'));
+ assert.equal(parameters.p_actor,'verified-user');
+ assert.deepEqual(parameters.p_revisions,body.entity_versions);
+ assert.equal((await handleAdmin(request({...body,entity_versions:null}),{...runtime,fetch:mock})).status,400);
+});

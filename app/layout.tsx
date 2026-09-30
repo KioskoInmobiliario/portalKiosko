@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Poppins, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AuthReturn from './auth-return';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
@@ -20,8 +21,8 @@ export const metadata: Metadata = {
     "codex-preview": "development",
   },
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/kiosko-logo.png",
+    shortcut: "/kiosko-logo.png",
   },
 };
 
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${poppins.variable} ${geistMono.variable} antialiased`}
       >
         <AuthReturn />
         {children}

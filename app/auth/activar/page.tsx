@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShieldCheck } from 'lucide-react';
 import { SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY } from '@/lib/kiosko-config';
 import { activationFromHash, passwordError } from '@/lib/auth-activation';
@@ -45,7 +46,7 @@ export default function ActivateAccount() {
    await fetch(`${SUPABASE_URL}/auth/v1/logout`,{method:'POST',headers:{apikey:SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${session}`}}).catch(()=>undefined);
   }catch(e){setPassword('');setConfirmation('');setError((e as Error).message);}finally{setBusy(false);}
  }
- return <main className={styles.shell}><header className={styles.header}><Link href="/" className={styles.brand}>KIOSKO<span>INMOBILIARIO</span></Link></header>
+ return <main className={styles.shell}><header className={styles.header}><Link href="/" className={styles.brand}><Image src="/kiosko-logo.png" alt="Kiosko Inmobiliario" width={1356} height={1800} className={styles.logo} priority /></Link></header>
   <section className={styles.login}><div className={styles.icon}><ShieldCheck size={28}/></div><p className={styles.eyebrow}>ACTIVACIÓN DE CUENTA</p><h1>{done?'Contraseña guardada':'Configure su contraseña'}</h1>
    {loading?<p>Verificando el enlace de activación…</p>:done?<><p>Ya puede iniciar sesión con su correo y la contraseña que eligió. El panel requiere además la autorización administrativa.</p><Link href="/admin/importaciones" className={styles.primary}>Ir al inicio de sesión</Link></>:token?<><p>Cuenta confirmada: {email}</p><form onSubmit={submit}><label className={styles.field}><span>Nueva contraseña</span><input type="password" autoComplete="new-password" required minLength={12} value={password} onChange={e=>setPassword(e.target.value)} disabled={busy}/></label><label className={styles.field}><span>Confirmar contraseña</span><input type="password" autoComplete="new-password" required minLength={12} value={confirmation} onChange={e=>setConfirmation(e.target.value)} disabled={busy}/></label><p className={styles.hint}>Use al menos 12 caracteres. Su contraseña se envía directamente a Supabase.</p><button className={styles.primary} disabled={busy}>{busy?'Guardando…':'Guardar contraseña'}</button></form></>:<p>Abra el enlace de la invitación enviada a su correo.</p>}
    {error&&<p role="alert" className={styles.error}>{error}</p>}

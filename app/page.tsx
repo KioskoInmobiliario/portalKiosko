@@ -25,6 +25,7 @@ import {
   Wrench,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const WHATSAPP_NUMBER = "573024236366";
@@ -84,12 +85,7 @@ const roleServices = {
 };
 
 function Logo() {
-  return (
-    <a className="brand" href="#inicio" aria-label="Portal Kiosko, inicio">
-      <span className="brand-mark"><Home aria-hidden="true" /></span>
-      <span><strong>Kiosko</strong> Inmobiliario</span>
-    </a>
-  );
+ return <a className="brand" href="#inicio" aria-label="Portal Kiosko, inicio"><Image src="/kiosko-logo.png" alt="Kiosko Inmobiliario" width={1356} height={1800} className="brand-logo" priority /></a>;
 }
 
 function WhatsAppButton({ message, children, className = "" }: { message: string; children: React.ReactNode; className?: string }) {

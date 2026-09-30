@@ -12,7 +12,7 @@ Estado al 30 de septiembre de 2026: esquema aplicado al proyecto Kiosko y 93 fil
 
 ## Fuente y carga
 
-Fuente: Base Kiosko Inmobiliario.xlsx, suministrado como datos ficticios.
+Fuente: Base Kiosko Inmobiliario.xlsx. El titular aclaró el 30 de septiembre de 2026 que los datos son reales y los está actualizando. Se corrige la descripción inicial de datos ficticios.
 SHA-256: `5ec22f679025318aa7dd144c6758bdd5b0de22002dab9f1716ea1eda4cb4a948`.
 
 Hoja 1: 17 columnas de negocio y 93 registros, filas 2–94. Se excluyeron filas vacías y el bloque auxiliar de aumentos de las filas 926–930.
@@ -94,3 +94,7 @@ create index if not exists ki_property_owners_client_id_idx on public.ki_propert
 Referencias:
 - https://supabase.com/docs/guides/database/postgres/row-level-security
 - https://supabase.com/docs/guides/storage/security/access-control
+
+## Estado actualizado — 30 de septiembre de 2026
+
+Consulta posterior a la revisión del titular: 1 fila incorporada y 92 pendientes; 1 inmueble, 1 contrato y 2 personas. Los conteos anteriores documentan la carga inicial. La edición posterior actualiza los registros existentes y conserva su historial.

@@ -6,6 +6,7 @@ export interface ImportRow {
  normalized_values: Record<string, Record<string, unknown>>;
  reviewed_values: Draft | null; validation_errors: { code: string; field: string }[];
  applied_entities?: Record<string, string>; reviewed_at?: string;
+ entity_versions?: Record<string,number>;
 }
 export interface Client { id: string; full_name: string; document_number: string | null; status: string }
 export interface Contract { id: string; external_reference: string; rent: string; administration: string; starts_on: string; insurance_provider: string | null }

@@ -46,3 +46,7 @@ Referencias:
 - https://vercel.com/docs/git/vercel-for-github
 - https://vercel.com/docs/builds/configure-a-build
 - https://vercel.com/docs/domains/working-with-domains/add-a-domain
+
+## Estado actualizado — 30 de septiembre de 2026
+
+Dominio portal.kioskoinmobiliario.com con Valid Configuration y HTTPS comprobados. Supabase Site URL https://portal.kioskoinmobiliario.com y redirect permitido https://portal.kioskoinmobiliario.com/auth/activar. Cuenta administrativa confirmada y activa; acceso confirmado por el titular. Recuperación de contraseña publicada y envío verificado. La rama de borrador se conserva hasta terminar el proyecto por instrucción del titular. La información anterior de DNS y acceso pendiente queda como antecedente del despliegue inicial.
