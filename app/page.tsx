@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
 const WHATSAPP_NUMBER = "573024236366";
@@ -135,9 +136,7 @@ export default function HomePage() {
           <a href="#perfiles" onClick={() => { setRole("arrendatario"); setMenuOpen(false); }}>Arrendatarios</a>
           <a href="#ayuda" onClick={() => setMenuOpen(false)}>Ayuda</a>
         </nav>
-        <button className="help-button" onClick={() => setActiveService("contact")} aria-label="Abrir ayuda">
-          <CircleHelp /> <span>Ayuda</span>
-        </button>
+        <div className="header-access"><Link href="/admin/importaciones" className="access-login" title="Acceso Panel Administrativo">Login <KeyRound size={16}/></Link><Link href="/registro" className="access-register">Registro <UserRound size={16}/></Link></div>
         <button className="menu-button" onClick={() => setMenuOpen(!menuOpen)} aria-label="Abrir menú">
           {menuOpen ? <X /> : <Menu />}
         </button>

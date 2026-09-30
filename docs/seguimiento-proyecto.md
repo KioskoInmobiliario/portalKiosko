@@ -39,3 +39,9 @@ Decisiones confirmadas por el titular el 30 de septiembre de 2026.
 Seleccionar filtro Incorporada, abrir una fila y usar Editar registros incorporados. Cambiar los valores, escribir motivo y Guardar actualización; confirmar antes de aplicar. Mantiene los registros existentes, el archivo original y el estado incorporado. Las modificaciones en personas o contratos compartidos se reflejan en otras relaciones. Cada registro tiene una revisión para impedir sobrescribir cambios simultáneos.
 
 Los ensayos de base de datos usan exclusivamente registros sintéticos en una transacción revertida. No modifican el registro real incorporado por el titular.
+
+## Ajuste del home y registro (30 septiembre de 2026)
+
+Se revisó la paleta oficial y se eliminaron degradados azules heredados. El home incorpora Login administrativo y Registro. Las solicitudes recogen los datos indicados por el usuario y quedan en Supabase pendientes de revisión. El panel permite consultar y buscar estas solicitudes. El cruce con clientes/inmuebles, validación de identidad y activación de cuentas queda pendiente; no se hacen asociaciones automáticas por documento o rol declarado. La rama de borrador sigue vigente.
+
+Verificación: build y TypeScript correctos, 13 pruebas de aplicación y pruebas SQL con rollback (duplicados, autorización, privacidad y lectura administrativa).

@@ -14,7 +14,8 @@ export async function handleAdmin(request: Request, runtime: Runtime): Promise<R
   if (new TextEncoder().encode(raw).length > 65536) return reply(413, { error: 'Solicitud demasiado grande' });
   const body = JSON.parse(raw);
   let name: string; let parameters: Record<string, unknown>;
-  if (body.action === 'list') { name = 'ki_admin_edit_list'; parameters = { p_actor: user.id }; }
+  if (body.action === 'list-registrations') { name = 'ki_admin_registrations'; parameters = { p_actor: user.id }; }
+  else if (body.action === 'list') { name = 'ki_admin_edit_list'; parameters = { p_actor: user.id }; }
   else if (body.action === 'update' && typeof body.row_id === 'string' && /^[0-9a-f-]{36}$/i.test(body.row_id) && Number.isInteger(body.version) && body.values && typeof body.values === 'object' && !Array.isArray(body.values) && body.entity_versions && typeof body.entity_versions === 'object' && !Array.isArray(body.entity_versions)) {
    name = 'ki_admin_update';
    parameters = {p_actor:user.id,p_row:body.row_id,p_version:body.version,p_values:body.values,p_revisions:body.entity_versions};

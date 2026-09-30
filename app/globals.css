@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --navy: #3A4C5A;
+  --brand-sky: #9BCCEE;
+  --brand-slate: #3A4C5A;
+  --navy: var(--brand-slate);
   --navy-2: #30414f;
   --blue: #3A4C5A;
   --blue-dark: #293b48;
-  --blue-soft: #eaf5fb;
+  --blue-soft: #9BCCEE;
   --sky: #f5f9fc;
   --line: #cbdde8;
   --ink-soft: #526776;
@@ -29,7 +31,7 @@ button { color: inherit; }
 .site-header { height: 84px; width: min(1280px, calc(100% - 48px)); margin: auto; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 20; }
 .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 22px; font-weight: 540; letter-spacing: -.04em; white-space: nowrap; }
 .brand strong { font-weight: 790; }
-.brand-mark, .mini-mark { display: grid; place-items: center; background: linear-gradient(145deg, #1684ff, #0653e7); color: white; clip-path: polygon(50% 0, 100% 33%, 90% 100%, 10% 100%, 0 33%); }
+.brand-mark, .mini-mark { display: grid; place-items: center; background: var(--brand-slate); color: white; clip-path: polygon(50% 0, 100% 33%, 90% 100%, 10% 100%, 0 33%); }
 .brand-mark { width: 42px; height: 44px; }
 .brand-mark svg { width: 20px; }
 .nav-links { display: flex; align-items: center; gap: 42px; font-size: 14px; font-weight: 680; }
@@ -57,7 +59,7 @@ button { color: inherit; }
 
 .portal-card { min-height: 434px; display: grid; grid-template-columns: 130px 1fr; border: 1px solid #a9c4e9; border-radius: 18px; background: rgba(255,255,255,.96); box-shadow: var(--shadow); overflow: hidden; position: relative; }
 .portal-card::after { content: ""; position: absolute; width: 330px; height: 330px; border-radius: 50%; background: #e4f1ff; filter: blur(3px); right: -170px; bottom: -220px; z-index: -1; }
-.portal-sidebar { padding: 22px 12px; border-right: 1px solid #d7e2f1; background: linear-gradient(180deg, #fafdff, #f3f8ff); display: flex; flex-direction: column; gap: 9px; }
+.portal-sidebar { padding: 22px 12px; border-right: 1px solid #d7e2f1; background: var(--brand-sky); display: flex; flex-direction: column; gap: 9px; }
 .mini-mark { width: 31px; height: 33px; margin: 0 7px 10px; }
 .mini-mark svg { width: 15px; }
 .side-item { min-height: 38px; padding: 0 8px; display: flex; align-items: center; gap: 8px; border-radius: 6px; color: #526776; font-size: 11px; }
@@ -122,7 +124,7 @@ button { color: inherit; }
 .role-services h4 { margin: 0 0 8px; font-size: 15px; }
 .role-services p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.55; }
 
-.nfc-section { padding: 85px 0; color: white; background: linear-gradient(125deg, #293b48 0%, #3A4C5A 58%, #526776 100%); position: relative; overflow: hidden; }
+.nfc-section { padding: 85px 0; color: white; background: var(--brand-slate); position: relative; overflow: hidden; }
 .nfc-section::before { content: "NFC"; position: absolute; right: -30px; top: -120px; font-size: 330px; font-weight: 850; color: rgba(255,255,255,.035); letter-spacing: -.1em; }
 .nfc-layout { display: grid; grid-template-columns: .8fr 1.2fr; gap: 82px; position: relative; }
 .eyebrow.light { background: rgba(255,255,255,.12); color: white; }
@@ -133,7 +135,7 @@ button { color: inherit; }
 .nfc-steps article { min-height: 112px; display: grid; grid-template-columns: 38px 1fr; gap: 18px; align-items: center; padding: 18px 22px; border: 1px solid rgba(255,255,255,.2); border-radius: 14px; background: rgba(255,255,255,.08); backdrop-filter: blur(8px); }
 .nfc-steps article > span { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: white; color: var(--blue); font-weight: 800; }
 .nfc-steps article div { display: grid; grid-template-columns: 32px 1fr; column-gap: 12px; align-items: center; }
-.nfc-steps article svg { grid-row: span 2; width: 27px; color: #73b9ff; }
+.nfc-steps article svg { grid-row: span 2; width: 27px; color: var(--brand-sky); }
 .nfc-steps h3 { margin: 0 0 3px; font-size: 16px; }
 .nfc-steps p { margin: 0; color: #cbdcf5; font-size: 12px; }
 
@@ -180,7 +182,7 @@ footer { background: #3A4C5A; color: white; }
 form { display: grid; gap: 16px; }
 form label { display: grid; gap: 7px; font-size: 12px; font-weight: 720; }
 form input, form textarea, form select { width: 100%; border: 1px solid #c5d5e8; border-radius: 9px; padding: 12px 13px; color: var(--navy); background: white; outline: none; }
-form input:focus, form textarea:focus, form select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(8,102,245,.1); }
+form input:focus, form textarea:focus, form select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(155,204,238,.45); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .privacy-note { margin: 0; display: flex; align-items: center; gap: 8px; color: #65748a; font-size: 11px; }
 .privacy-note svg { width: 16px; color: var(--green); }
@@ -245,3 +247,36 @@ form input:focus, form textarea:focus, form select:focus { border-color: var(--b
 .brand-logo{width:54px;height:72px;object-fit:contain}.site-header{height:100px}.brand-mark,.mini-mark{background:#3A4C5A}.button-primary{box-shadow:0 10px 24px rgba(58,76,90,.15)}.button-primary:hover{box-shadow:0 14px 28px rgba(58,76,90,.2)}
 
 .footer-main .brand-logo{background:white;border-radius:8px;padding:6px;width:66px;height:86px}
+
+/* Official brand colors: flat slate surfaces and light blue accents. */
+.service-strip {background:var(--brand-slate);color:white}
+.eyebrow {background:var(--brand-sky);color:var(--brand-slate)}
+.side-item.active,.portal-note,.service-icon,.profile-switch {background:var(--brand-sky);color:var(--brand-slate)}
+.portal-card,.quick-card,.role-panel,.role-services article {border-color:var(--brand-sky)}
+.nfc-copy p,.nfc-steps p,.contact-card p,.contact-card > a:not(.button),.footer-main p,.footer-main span,.footer-main a,.footer-main button,.footer-bottom {color:#dcecf6}
+.header-access {display:flex;align-items:center;gap:10px}
+.access-login,.access-register {display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 15px;border:1px solid var(--brand-slate);border-radius:8px;font-size:14px;font-weight:700}
+.access-register {background:var(--brand-sky);border-color:var(--brand-sky)}
+.access-login:hover,.access-register:hover {background:var(--brand-slate);color:white}
+a:focus-visible,button:focus-visible {outline:3px solid var(--brand-sky);outline-offset:3px}
+.registration-page {min-height:100vh;background:#f5f9fc;padding-bottom:48px}
+.registration-card {width:min(660px,calc(100% - 32px));margin:28px auto 0;background:white;border:1px solid var(--brand-sky);border-radius:16px;padding:32px}
+.registration-card h1 {font-size:32px;margin:14px 0}
+.registration-card p {line-height:1.65}
+.registration-card fieldset {border:0;padding:0;margin:0}
+.registration-card legend {font-size:14px;font-weight:700;margin-bottom:8px}
+.registration-switch {display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1px solid var(--brand-sky);border-radius:10px;background:#f5f9fc}
+.registration-switch button {border:0;border-radius:7px;padding:12px;cursor:pointer;background:transparent}
+.registration-switch button[aria-pressed="true"] {background:var(--brand-sky);font-weight:700}
+.registration-consent {display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:13px;line-height:1.6}
+.registration-consent input {width:18px;height:18px;flex-shrink:0;margin-top:4px;accent-color:var(--brand-slate)}
+.registration-honey {display:none}
+.registration-error {color:#992b2b;background:#fff1f1;padding:12px;border-radius:8px}
+.registration-success {padding:20px;background:#eaf5fb;border-left:4px solid var(--brand-sky);border-radius:8px}
+.registration-inbox {border:1px solid #9BCCEE;border-radius:12px;padding:20px;margin-bottom:24px;background:white}
+.registration-inbox summary {cursor:pointer;font-weight:700}
+.registration-inbox table {width:100%;border-collapse:collapse;font-size:13px;margin-top:16px}
+.registration-inbox th,.registration-inbox td {padding:10px;border-bottom:1px solid #cbdde8;text-align:left;vertical-align:top}
+.registration-inbox td small {display:block}
+@media(max-width:1050px) {.nav-links {gap:18px;font-size:12px}.site-header {gap:14px}}
+@media(max-width:720px) {.site-header{height:96px}.header-access{margin-left:auto;gap:6px}.access-login,.access-register{padding:10px;font-size:12px}.header-access svg{display:none}.nav-links{top:94px}.brand-logo{width:45px;height:64px}.registration-card{padding:24px 20px}.registration-card h1{font-size:28px}}
