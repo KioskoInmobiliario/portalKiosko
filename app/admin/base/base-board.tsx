@@ -1,8 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import type { FormEvent } from 'react';
 import { Edit3, Plus, Search, Trash2, X } from 'lucide-react';
 import type { AdminBaseData, BaseClient, BaseOwner, BaseProperty } from '@/lib/admin-base';
+import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from '@/lib/kiosko-config';
+import { deriveAdminBaseData } from '@/lib/admin-derived-data';
+import type { ReviewData } from '@/lib/import-review';
 import styles from './base.module.css';
 
 type Section = 'clients' | 'properties' | 'owners';
@@ -57,10 +61,17 @@ function readValue(row: EditableRow, key: string) {
 export default function BaseBoard({ initialData }: { initialData: AdminBaseData }) {
   const [section, setSection] = useState<Section>('clients');
   const [query, setQuery] = useState('');
-  const [clients, setClients] = useState(initialData.clients);
-  const [properties, setProperties] = useState(initialData.properties);
-  const [owners, setOwners] = useState(initialData.owners);
+  const [dataSet, setDataSet] = useState(initialData);
+  const [clients, setClients] = useState(dataSet.clients);
+  const [properties, setProperties] = useState(dataSet.properties);
+  const [owners, setOwners] = useState(dataSet.owners);
   const [editing, setEditing] = useState<{ section: Section; row: EditableRow } | null>(null);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [accessToken, setAccessToken] = useState('');
+  const [notice, setNotice] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
 
   const rows = useMemo(() => {
     const source = section === 'clients' ? clients : section === 'properties' ? properties : owners;
@@ -73,7 +84,55 @@ export default function BaseBoard({ initialData }: { initialData: AdminBaseData 
     dateStyle: 'medium',
     timeStyle: 'short',
     timeZone: 'America/Bogota',
-  }).format(new Date(initialData.generatedAt));
+  }).format(new Date(dataSet.generatedAt));
+
+  function applyRealData(reviewData: ReviewData) {
+    const derived = deriveAdminBaseData(reviewData);
+    setDataSet(derived);
+    setClients(derived.clients);
+    setProperties(derived.properties);
+    setOwners(derived.owners);
+    setNotice('Base actualizada con incorporaciones aprobadas.');
+  }
+
+  async function loadApprovedData(token: string) {
+    const response = await fetch('/api/admin/imports', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'list' }),
+      cache: 'no-store',
+    });
+    const json = await response.json();
+    if (!response.ok) throw new Error(json.error || json.message || 'No fue posible cargar las incorporaciones aprobadas.');
+    applyRealData(json);
+  }
+
+  async function connectApprovedData(event: FormEvent) {
+    event.preventDefault();
+    setBusy(true);
+    setError('');
+    setNotice('');
+    try {
+      let token = accessToken;
+      if (!token) {
+        const response = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+          method: 'POST',
+          headers: { apikey: SUPABASE_PUBLISHABLE_KEY, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const json = await response.json();
+        if (!response.ok) throw new Error('No se pudo iniciar sesión. Verifique el correo y la contraseña.');
+        token = json.access_token;
+        setAccessToken(token);
+        setPassword('');
+      }
+      await loadApprovedData(token);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
 
   function saveRow() {
     if (!editing) return;
@@ -109,10 +168,29 @@ export default function BaseBoard({ initialData }: { initialData: AdminBaseData 
           <p>Esta pantalla queda preparada para revisar, editar y administrar la información maestra antes de conectarla a la base definitiva.</p>
         </div>
         <div className={styles.statusCard}>
-          <span>{initialData.source === 'seed' ? 'Datos semilla' : 'Datos conectados'}</span>
+          <span>{dataSet.source === 'seed' ? 'Datos semilla' : 'Datos conectados'}</span>
           <strong>{clients.length + properties.length + owners.length}</strong>
           <small>Registros visibles · actualización {updatedAt}</small>
         </div>
+      </section>
+
+      <section className={styles.connection}>
+        <div>
+          <p className={styles.eyebrow}>Fuente de datos</p>
+          <h2>Incorporaciones aprobadas</h2>
+          <p>Conecta tu sesión administrativa para alimentar esta base con las filas ya incorporadas desde Importaciones.</p>
+        </div>
+        <form onSubmit={connectApprovedData}>
+          {!accessToken && (
+            <>
+              <input type="email" placeholder="Correo administrativo" value={email} onChange={(event) => setEmail(event.target.value)} required />
+              <input type="password" placeholder="Contraseña" value={password} onChange={(event) => setPassword(event.target.value)} required />
+            </>
+          )}
+          <button type="submit" className={styles.primary} disabled={busy}>{busy ? 'Actualizando...' : accessToken ? 'Actualizar desde importaciones' : 'Conectar datos reales'}</button>
+        </form>
+        {notice && <p className={styles.success}>{notice}</p>}
+        {error && <p className={styles.error}>{error}</p>}
       </section>
 
       <section className={styles.summary} aria-label="Resumen de base">
