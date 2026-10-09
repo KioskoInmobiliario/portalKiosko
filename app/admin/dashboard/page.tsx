@@ -43,6 +43,7 @@ export default async function AdminDashboardPage() {
         </Link>
         <nav className={styles.nav} aria-label="Administración">
           <Link href="/admin/importaciones">Importaciones</Link>
+          <Link href="/admin/base">Base</Link>
           <Link href="/admin/dashboard" aria-current="page">Dashboard CRM</Link>
         </nav>
         <span className={styles.adminLabel}><ShieldCheck size={17} /> Borrador Fase 1</span>
