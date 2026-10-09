@@ -13,38 +13,28 @@ import {
   ShieldCheck,
   UsersRound,
 } from 'lucide-react';
+import { getAdminDashboardData, type DashboardMetric } from '@/lib/admin-dashboard';
 import styles from './dashboard.module.css';
 
-const pipeline = [
-  { label: 'Nuevo contacto', value: 18, accent: 'sky' },
-  { label: 'Visita agendada', value: 9, accent: 'slate' },
-  { label: 'Negociación', value: 6, accent: 'sky' },
-  { label: 'Cierre pendiente', value: 4, accent: 'slate' },
-];
-
-const properties = [
-  { code: 'CH-502', title: 'Apartamento Chicó', status: 'Disponible', value: '$3.800.000', detail: '92 m2 · 2 alcobas' },
-  { code: 'CT-1204', title: 'Apartamento Cedritos', status: 'En negociación', value: '$2.900.000', detail: '78 m2 · 1 parqueadero' },
-  { code: 'SB-301', title: 'Oficina Santa Bárbara', status: 'Arrendada', value: '$5.100.000', detail: '124 m2 · contrato activo' },
-];
-
-const agenda = [
-  { time: '09:00', title: 'Llamada propietario', detail: 'Validar precio de captación' },
-  { time: '11:30', title: 'Visita inmueble', detail: 'Cliente interesado en Cedritos' },
-  { time: '15:00', title: 'Seguimiento cartera', detail: 'Cuenta de cobro pendiente' },
-];
-
-const agents = [
-  { name: 'Comercial 1', metric: '8 visitas', progress: 76 },
-  { name: 'Comercial 2', metric: '5 cierres', progress: 64 },
-  { name: 'Operaciones', metric: '21 gestiones', progress: 88 },
-];
+const metricIcons: Record<DashboardMetric['id'], typeof UsersRound> = {
+  leads: UsersRound,
+  available_properties: Building2,
+  appointments: CalendarDays,
+  pending_payments: Banknote,
+};
 
 export const metadata = {
   title: 'Dashboard CRM | Portal Kiosko',
 };
 
-export default function AdminDashboardPage() {
+export default async function AdminDashboardPage() {
+  const dashboard = await getAdminDashboardData();
+  const updatedAt = new Intl.DateTimeFormat('es-CO', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'America/Bogota',
+  }).format(new Date(dashboard.generatedAt));
+
   return (
     <main className={styles.shell}>
       <header className={styles.header}>
@@ -66,16 +56,21 @@ export default function AdminDashboardPage() {
         </div>
         <div className={styles.heroCard}>
           <LineChart />
-          <strong>$84.6M</strong>
-          <span>Proyección mensual entre arriendos, administración y comisiones.</span>
+          <strong>{dashboard.finance.value}</strong>
+          <span>{dashboard.finance.description}</span>
         </div>
       </section>
 
+      <section className={styles.dataStatus} aria-label="Estado de datos">
+        <strong>{dashboard.source === 'seed' ? 'Datos semilla' : 'Datos conectados'}</strong>
+        <span>Última actualización: {updatedAt}. Estructura lista para conectar base definitiva y permisos por perfil.</span>
+      </section>
+
       <section className={styles.metrics} aria-label="Indicadores principales">
-        <article><UsersRound /><span>Prospectos activos</span><strong>37</strong></article>
-        <article><Building2 /><span>Inmuebles disponibles</span><strong>14</strong></article>
-        <article><CalendarDays /><span>Citas esta semana</span><strong>11</strong></article>
-        <article><Banknote /><span>Pagos pendientes</span><strong>8</strong></article>
+        {dashboard.metrics.map((metric) => {
+          const Icon = metricIcons[metric.id];
+          return <article key={metric.id}><Icon /><span>{metric.label}</span><strong>{metric.value}</strong><small>{metric.description}</small></article>;
+        })}
       </section>
 
       <section className={styles.grid}>
@@ -85,8 +80,8 @@ export default function AdminDashboardPage() {
             <PhoneCall />
           </div>
           <div className={styles.pipeline}>
-            {pipeline.map((item) => (
-              <div key={item.label}>
+            {dashboard.pipeline.map((item) => (
+              <div key={item.id}>
                 <span>{item.label}</span>
                 <strong>{item.value}</strong>
                 <i className={item.accent === 'sky' ? styles.sky : styles.slate} style={{ width: `${Math.max(item.value * 4, 22)}%` }} />
@@ -101,8 +96,8 @@ export default function AdminDashboardPage() {
             <Home />
           </div>
           <div className={styles.propertyList}>
-            {properties.map((property) => (
-              <div key={property.code}>
+            {dashboard.properties.map((property) => (
+              <div key={property.id}>
                 <span>{property.code}</span>
                 <strong>{property.title}</strong>
                 <small>{property.detail}</small>
@@ -119,8 +114,8 @@ export default function AdminDashboardPage() {
             <CalendarDays />
           </div>
           <div className={styles.agenda}>
-            {agenda.map((event) => (
-              <div key={event.time}>
+            {dashboard.agenda.map((event) => (
+              <div key={event.id}>
                 <time>{event.time}</time>
                 <span><strong>{event.title}</strong><small>{event.detail}</small></span>
               </div>
@@ -134,8 +129,8 @@ export default function AdminDashboardPage() {
             <ClipboardList />
           </div>
           <div className={styles.agents}>
-            {agents.map((agent) => (
-              <div key={agent.name}>
+            {dashboard.team.map((agent) => (
+              <div key={agent.id}>
                 <span><strong>{agent.name}</strong><small>{agent.metric}</small></span>
                 <i><b style={{ width: `${agent.progress}%` }} /></i>
               </div>
@@ -147,8 +142,8 @@ export default function AdminDashboardPage() {
       <section className={styles.nextStep}>
         <CheckCircle2 />
         <div>
-          <h2>Siguiente revisión</h2>
-          <p>Validar contigo si esta jerarquía de pantalla corresponde al flujo real de Kiosko antes de conectarla a datos vivos, permisos y reportes PDF.</p>
+          <h2>Estructura preparada</h2>
+          <p>La vista ya consume un contrato de datos único. El siguiente paso será reemplazar los datos semilla por consultas reales y filtrar salidas para administrador, propietario e inquilino.</p>
         </div>
         <Link href="/admin/importaciones">Volver a importaciones <ArrowRight size={16} /></Link>
       </section>
