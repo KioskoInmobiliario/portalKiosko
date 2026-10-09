@@ -52,7 +52,7 @@ export type AdminDashboardData = {
   finance: DashboardFinanceSummary;
 };
 
-export async function getAdminDashboardData(): Promise<AdminDashboardData> {
+export function getAdminDashboardData(): AdminDashboardData {
   return {
     generatedAt: new Date().toISOString(),
     source: 'seed',
